@@ -1,0 +1,12 @@
+Python 2.7+
+six
+numpy
+h5py
+scipy
+Pillow
+matplotlib
+opencv-python
+imageio
+scikit-image=0.12.2
+Shapely - from wheel
+imgaug
