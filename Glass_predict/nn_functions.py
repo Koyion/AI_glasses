@@ -7,7 +7,7 @@ from tensorflow.python.framework import ops
 
 
 def load_dataset():
-    train_dataset = h5py.File('C:/Users/Koyion/PycharmProjects/Augument_scroller/train_set_64.hdf5', "r")
+    train_dataset = h5py.File('C:/Users/Koyion/PycharmProjects/Augument_scroller/acc_train_set_128.hdf5', "r")
 
     # train_set_x_orig = np.array(train_dataset["X_train"][:6136])  # train set features
     # train_set_y_orig = np.array(train_dataset["Y_train"][:6136])  # train set features
@@ -15,11 +15,11 @@ def load_dataset():
     # test_set_x_orig = np.array(train_dataset["X_train"][6137:])  # train set features
     # test_set_y_orig = np.array(train_dataset["Y_train"][6137:])  # train set features
 
-    train_set_x_orig = np.array(train_dataset["X_train"][:512])  # train set features
-    train_set_y_orig = np.array(train_dataset["Y_train"][:512])  # train set features
+    train_set_x_orig = np.array(train_dataset["X_train"][:2560])  # train set features
+    train_set_y_orig = np.array(train_dataset["Y_train"][:2560])  # train set features
 
-    test_set_x_orig = np.array(train_dataset["X_train"][513:600])  # train set features
-    test_set_y_orig = np.array(train_dataset["Y_train"][513:600])  # train set features
+    test_set_x_orig = np.array(train_dataset["X_train"][2561:])  # train set features
+    test_set_y_orig = np.array(train_dataset["Y_train"][2561:])  # train set features
 
     classes = {
         "glasses": np.array([1, 0, 0]),
