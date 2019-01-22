@@ -1,5 +1,48 @@
 import tensorflow as tf
 
+
+def initialize_parameters(beta=0):
+  
+    tf.set_random_seed(1)                              # so that your "random" numbers match ours
+    
+    #Regularization
+    if beta!=0:
+        regularizer = tf.contrib.layers.l2_regularizer(scale=beta)
+    else: regularizer=None
+    
+    W1 = tf.get_variable(..., regularizer=regularizer)
+    W2 = tf.get_variable(..., regularizer=regularizer)
+
+    parameters = {"W1": W1,
+                  "W2": W2}
+    
+    return parameters, regularizer
+	
+	
+def forward_propagation(X, parameters, regularizer=None):
+   
+   .......
+   
+   Z3 = tf.contrib.layers.fully_connected(..., weights_regularizer=regularizer)
+  
+   return Z3
+   
+ def compute_cost(Z3, Y, regularizer=None):
+    
+    .....f
+    
+    #Regularize
+    if regularizer is not None:
+        reg_variables = tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES)
+        reg_term = tf.contrib.layers.apply_regularization(regularizer, reg_variables)
+    else:
+        reg_term = 0
+    
+    cost += reg_term
+    
+    return cost
+	
+### SAVING
 # Create some variables.
 v1 = tf.get_variable("v1", shape=[3], initializer = tf.zeros_initializer)
 v2 = tf.get_variable("v2", shape=[5], initializer = tf.zeros_initializer)
