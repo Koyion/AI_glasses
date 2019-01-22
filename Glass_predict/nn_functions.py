@@ -7,7 +7,7 @@ from tensorflow.python.framework import ops
 
 
 def load_dataset():
-    train_dataset = h5py.File('C:/Users/Koyion/PycharmProjects/Augument_scroller/acc_train_set_128.hdf5', "r")
+    train_dataset = h5py.File('datasets/acc_train_set_256.hdf5', "r")
 
     # train_set_x_orig = np.array(train_dataset["X_train"][:6136])  # train set features
     # train_set_y_orig = np.array(train_dataset["Y_train"][:6136])  # train set features

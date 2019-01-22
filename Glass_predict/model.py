@@ -10,8 +10,8 @@ from tensorflow.python.framework import ops
 from nn_functions import *
 from model_functions import *
 
-X_train_orig, Y_train, X_test_orig, Y_test, classes = load_dataset()
 
+X_train_orig, Y_train, X_test_orig, Y_test, classes = load_dataset()
 
 X_train = X_train_orig/255.
 X_test = X_test_orig/255.
@@ -99,13 +99,13 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate=0.01,
     X, Y = create_placeholders(n_H0, n_W0, n_C0, n_y)
 
     # Initialize parameters
-    parameters = initialize_parameters()
+    parameters, regularizer = initialize_parameters_L5(beta=0.01)
 
     # Forward propagation: Build the forward propagation in the tensorflow graph
-    Z3 = forward_propagation(X, parameters)
+    Z_L = forward_propagation_L_5(X, parameters, regularizer=regularizer)
 
     # Cost function: Add cost function to tensorflow graph
-    cost = compute_cost(Z3, Y)
+    cost = compute_cost(Z_L, Y, regularizer=regularizer)
     # Loss function with L2 Regularization with beta=0.01
     # regularizers = tf.nn.l2_loss(parameters["W1"]) + tf.nn.l2_loss(parameters["W2"])
     # cost = tf.reduce_mean(cost + 0.01 * regularizers)
@@ -115,9 +115,12 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate=0.01,
 
     # Initialize all the variables globally
     init = tf.global_variables_initializer()
-
+    # Configure CPU usage
+    config = tf.ConfigProto()
+    config.intra_op_parallelism_threads = 8
+    config.inter_op_parallelism_threads = 8
     # Start the session to compute the tensorflow graph
-    with tf.Session() as sess:
+    with tf.Session(config=config) as sess:
 
         # Run the initialization
         sess.run(init)
@@ -153,20 +156,19 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate=0.01,
         plt.show()
 
         # Calculate the correct predictions
-        predict_op = tf.argmax(Z3, 1)
+        predict_op = tf.argmax(Z_L, 1)
         correct_prediction = tf.equal(predict_op, tf.argmax(Y, 1))
 
         # Calculate accuracy on the test set
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
         print(accuracy)
-        train_accuracy = accuracy.eval({X: X_train, Y: Y_train})
-        test_accuracy = accuracy.eval({X: X_test, Y: Y_test})
+        train_accuracy = accuracy.eval({X: X_train[:100], Y: Y_train[:100]})
+        test_accuracy = accuracy.eval({X: X_test[:50], Y: Y_test[:50]})
         print("Train Accuracy:", train_accuracy)
         print("Test Accuracy:", test_accuracy)
 
         return train_accuracy, test_accuracy, parameters
 
 
-_, _, parameters = model(X_train, Y_train, X_test, Y_test, learning_rate=0.01, num_epochs=80, minibatch_size=512)
+_, _, parameters = model(X_train, Y_train, X_test, Y_test, learning_rate=0.01, num_epochs=40, minibatch_size=64)
 
-print(str(parameters["W1"]))
