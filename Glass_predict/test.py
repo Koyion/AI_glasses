@@ -1,5 +1,5 @@
 import tensorflow as tf
-
+https://www.coursera.org/learn/convolutional-neural-networks/programming/bwbJV/convolutional-model-application/discussions/threads/npnNgsUpEeeaSxJ_5wiJJg
 
 def initialize_parameters(beta=0):
   
