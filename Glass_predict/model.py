@@ -10,8 +10,8 @@ from tensorflow.python.framework import ops
 from nn_functions import *
 from model_functions import *
 
-X_train_orig, Y_train, X_test_orig, Y_test, classes = load_dataset()
 
+X_train_orig, Y_train, X_test_orig, Y_test, classes = load_dataset()
 
 X_train = X_train_orig/255.
 X_test = X_test_orig/255.
@@ -99,13 +99,13 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate=0.01,
     X, Y = create_placeholders(n_H0, n_W0, n_C0, n_y)
 
     # Initialize parameters
-    parameters = initialize_parameters()
+    parameters, regularizer = initialize_parameters(beta=0.05)
 
     # Forward propagation: Build the forward propagation in the tensorflow graph
-    Z3 = forward_propagation(X, parameters)
+    Z4 = forward_propagation(X, parameters, regularizer=regularizer)
 
     # Cost function: Add cost function to tensorflow graph
-    cost = compute_cost(Z3, Y)
+    cost = compute_cost(Z4, Y, regularizer=regularizer)
     # Loss function with L2 Regularization with beta=0.01
     # regularizers = tf.nn.l2_loss(parameters["W1"]) + tf.nn.l2_loss(parameters["W2"])
     # cost = tf.reduce_mean(cost + 0.01 * regularizers)
@@ -153,7 +153,7 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate=0.01,
         plt.show()
 
         # Calculate the correct predictions
-        predict_op = tf.argmax(Z3, 1)
+        predict_op = tf.argmax(Z4, 1)
         correct_prediction = tf.equal(predict_op, tf.argmax(Y, 1))
 
         # Calculate accuracy on the test set
@@ -167,6 +167,5 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate=0.01,
         return train_accuracy, test_accuracy, parameters
 
 
-_, _, parameters = model(X_train, Y_train, X_test, Y_test, learning_rate=0.01, num_epochs=80, minibatch_size=512)
+_, _, parameters = model(X_train, Y_train, X_test, Y_test, learning_rate=0.01, num_epochs=80, minibatch_size=64)
 
-print(str(parameters["W1"]))
