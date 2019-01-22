@@ -170,5 +170,24 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate=0.01,
         return train_accuracy, test_accuracy, parameters
 
 
-_, _, parameters = model(X_train, Y_train, X_test, Y_test, learning_rate=0.01, num_epochs=40, minibatch_size=64)
+_, _, parameters = model(X_train, Y_train, X_test, Y_test, learning_rate=0.01, num_epochs=4, minibatch_size=64)
 
+fname = "D:/git/datasets/1_00231.jpeg"
+fname_1 = "D:/git/datasets/1_01169.jpeg"
+fname_2 = "D:/git/datasets/1_01193.jpeg"
+
+image = np.array(ndimage.imread(fname, flatten=False))
+image_1 = np.array(ndimage.imread(fname_1, flatten=False))
+image_2 = np.array(ndimage.imread(fname_2, flatten=False))
+
+my_image = scipy.misc.imresize(image, size=(128, 128)).reshape((1, 128, 128, 3))
+my_image_1 = scipy.misc.imresize(image_1, size=(128, 128)).reshape((1, 128, 128, 3))
+my_image_2 = scipy.misc.imresize(image_2, size=(128, 128)).reshape((1, 128, 128, 3))
+
+
+my_image_prediction = predict(my_image, parameters)
+print("Your Algo Predicts for back: y = " + str(np.squeeze(my_image_prediction)))
+#my_image_prediction = predict(my_image_1, parameters)
+#print("Your Algo Predicts for sunglassws: y = " + str(np.squeeze(my_image_prediction)))
+#my_image_prediction = predict(my_image_2, parameters)
+#print("Your Algo Predicts for glasswes: y = " + str(np.squeeze(my_image_prediction)))

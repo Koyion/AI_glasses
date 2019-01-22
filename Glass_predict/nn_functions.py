@@ -7,7 +7,7 @@ from tensorflow.python.framework import ops
 
 
 def load_dataset():
-    train_dataset = h5py.File('datasets/acc_train_set_256.hdf5', "r")
+    train_dataset = h5py.File('D:/git/datasets/acc_train_set_256.hdf5', "r")
 
     # train_set_x_orig = np.array(train_dataset["X_train"][:6136])  # train set features
     # train_set_y_orig = np.array(train_dataset["Y_train"][:6136])  # train set features
@@ -15,11 +15,11 @@ def load_dataset():
     # test_set_x_orig = np.array(train_dataset["X_train"][6137:])  # train set features
     # test_set_y_orig = np.array(train_dataset["Y_train"][6137:])  # train set features
 
-    train_set_x_orig = np.array(train_dataset["X_train"][:2560])  # train set features
-    train_set_y_orig = np.array(train_dataset["Y_train"][:2560])  # train set features
+    train_set_x_orig = np.array(train_dataset["X_train"][:256])  # train set features
+    train_set_y_orig = np.array(train_dataset["Y_train"][:256])  # train set features
 
-    test_set_x_orig = np.array(train_dataset["X_train"][2561:])  # train set features
-    test_set_y_orig = np.array(train_dataset["Y_train"][2561:])  # train set features
+    test_set_x_orig = np.array(train_dataset["X_train"][257:300])  # train set features
+    test_set_y_orig = np.array(train_dataset["Y_train"][257:300])  # train set features
 
     classes = {
         "glasses": np.array([1, 0, 0]),
@@ -81,87 +81,62 @@ def convert_to_one_hot(Y, C):
 
 
 def forward_propagation_for_predict(X, parameters):
-    """
-    Implements the forward propagation for the model: LINEAR -> RELU -> LINEAR -> RELU -> LINEAR -> SOFTMAX
-
-    Arguments:
-    X -- input dataset placeholder, of shape (input size, number of examples)
-    parameters -- python dictionary containing your parameters "W1", "b1", "W2", "b2", "W3", "b3"
-                  the shapes are given in initialize_parameters
-
-    Returns:
-    Z3 -- the output of the last LINEAR unit
-    """
-
     # Retrieve the parameters from the dictionary "parameters"
     W1 = parameters['W1']
-    b1 = parameters['b1']
     W2 = parameters['W2']
-    b2 = parameters['b2']
     W3 = parameters['W3']
-    b3 = parameters['b3']
-    # Numpy Equivalents:
-    Z1 = tf.add(tf.matmul(W1, X), b1)  # Z1 = np.dot(W1, X) + b1
-    A1 = tf.nn.relu(Z1)  # A1 = relu(Z1)
-    Z2 = tf.add(tf.matmul(W2, A1), b2)  # Z2 = np.dot(W2, a1) + b2
-    A2 = tf.nn.relu(Z2)  # A2 = relu(Z2)
-    Z3 = tf.add(tf.matmul(W3, A2), b3)  # Z3 = np.dot(W3,Z2) + b3
+    W4 = parameters['W4']
 
-    return Z3
+    Z1 = tf.nn.conv2d(X, W1, strides=[1, 1, 1, 1], padding='SAME')
+    # RELU
+    A1 = tf.nn.relu(Z1)
+    P1 = tf.nn.avg_pool(A1, ksize=[1, 4, 4, 1], strides=[1, 2, 2, 1], padding='SAME')
+
+    Z2 = tf.nn.conv2d(P1, W2, strides=[1, 1, 1, 1], padding='SAME')
+    # RELU
+    A2 = tf.nn.relu(Z2)
+    P2 = tf.nn.max_pool(A2, ksize=[1, 4, 4, 1], strides=[1, 2, 2, 1], padding='SAME')
+
+    Z3 = tf.nn.conv2d(P2, W3, strides=[1, 1, 1, 1], padding='SAME')
+    # RELU
+    A3 = tf.nn.relu(Z3)
+    P3 = tf.nn.avg_pool(A3, ksize=[1, 2, 2, 1], strides=[1, 4, 4, 1], padding='SAME')
+
+    Z4 = tf.nn.conv2d(P3, W4, strides=[1, 1, 1, 1], padding='SAME')
+    # RELU
+    A4 = tf.nn.relu(Z4)
+    P4 = tf.nn.avg_pool(A4, ksize=[1, 2, 2, 1], strides=[1, 4, 4, 1], padding='SAME')
+    # FLATTEN
+    P4 = tf.contrib.layers.flatten(P4)
+    # FULLY-CONNECTED without non-linear activation function (not not call softmax).
+    # 3 neurons in output layer. Hint: one of the arguments should be "activation_fn=None"
+    Z5 = tf.contrib.layers.fully_connected(P4, num_outputs=3, activation_fn=None)
+    return Z5
 
 
 def predict(X, parameters):
     W1 = tf.convert_to_tensor(parameters["W1"])
-    b1 = tf.convert_to_tensor(parameters["b1"])
     W2 = tf.convert_to_tensor(parameters["W2"])
-    b2 = tf.convert_to_tensor(parameters["b2"])
     W3 = tf.convert_to_tensor(parameters["W3"])
-    b3 = tf.convert_to_tensor(parameters["b3"])
-
+    W4 = tf.convert_to_tensor(parameters["W4"])
+    print(str(W1))
+    print(str(W2))
+    print(str(W3))
+    print(str(W4))
     params = {"W1": W1,
-              "b1": b1,
               "W2": W2,
-              "b2": b2,
               "W3": W3,
-              "b3": b3}
+              "W4": W4}
 
-    x = tf.placeholder("float", [12288, 1])
+    x = tf.placeholder(tf.float32, shape=(None, 128, 128, 3))
 
     z3 = forward_propagation_for_predict(x, params)
+    print(str(z3))
     p = tf.argmax(z3)
 
     sess = tf.Session()
+    init = tf.global_variables_initializer()
+    sess.run(init)
     prediction = sess.run(p, feed_dict={x: X})
 
     return prediction
-
-# def predict(X, parameters):
-#
-#    W1 = tf.convert_to_tensor(parameters["W1"])
-#    b1 = tf.convert_to_tensor(parameters["b1"])
-#    W2 = tf.convert_to_tensor(parameters["W2"])
-#    b2 = tf.convert_to_tensor(parameters["b2"])
-##    W3 = tf.convert_to_tensor(parameters["W3"])
-##    b3 = tf.convert_to_tensor(parameters["b3"])
-#
-##    params = {"W1": W1,
-##              "b1": b1,
-##              "W2": W2,
-##              "b2": b2,
-##              "W3": W3,
-##              "b3": b3}
-#
-#    params = {"W1": W1,
-#              "b1": b1,
-#              "W2": W2,
-#              "b2": b2}
-#
-#    x = tf.placeholder("float", [12288, 1])
-#
-#    z3 = forward_propagation(x, params)
-#    p = tf.argmax(z3)
-#
-#    with tf.Session() as sess:
-#        prediction = sess.run(p, feed_dict = {x: X})
-#
-#    return prediction
