@@ -99,10 +99,12 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate=0.01,
     X, Y = create_placeholders(n_H0, n_W0, n_C0, n_y)
 
     # Initialize parameters
-    parameters, regularizer = initialize_parameters_L5(beta=0.01)
+    parameters, regularizer = initialize_parameters_l5_2fc(beta=0.01)
 
     # Forward propagation: Build the forward propagation in the tensorflow graph
-    Z_L = forward_propagation_L_5(X, parameters, regularizer=regularizer)
+    Z_L = forward_propagation_l5_2fc(X, parameters, regularizer=regularizer)
+
+    y_pred = tf.nn.softmax(Z_L, name='y_pred')
 
     # Cost function: Add cost function to tensorflow graph
     cost = compute_cost(Z_L, Y, regularizer=regularizer)
@@ -146,13 +148,13 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate=0.01,
                 costs.append(minibatch_cost)
 
         # plot the cost
-        # plt.plot(np.squeeze(costs))
-        # plt.ylabel('cost')
-        # plt.xlabel('iterations (per tens)')
-        # plt.title("Learning rate =" + str(learning_rate))
-        # plt.show()
+        plt.plot(np.squeeze(costs))
+        plt.ylabel('cost')
+        plt.xlabel('iterations (per tens)')
+        plt.title("Learning rate =" + str(learning_rate))
+        plt.show()
         # lets save the parameters in a variable
-        parameters = sess.run(parameters)
+        # parameters = sess.run(parameters)
         print("Parameters have been trained!")
         # Calculate the correct predictions
         predict_op = tf.argmax(Z_L, 1)
@@ -161,13 +163,13 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate=0.01,
         # Calculate accuracy on the test set
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
         print(accuracy)
-        train_accuracy = accuracy.eval({X: X_train[:100], Y: Y_train[:100]})
-        test_accuracy = accuracy.eval({X: X_test[:50], Y: Y_test[:50]})
+        train_accuracy = accuracy.eval({X: X_train[:300], Y: Y_train[:300]})
+        test_accuracy = accuracy.eval({X: X_test[:], Y: Y_test[:]})
         print("Train Accuracy:", train_accuracy)
         print("Test Accuracy:", test_accuracy)
-        save_path = saver.save(sess, "datasets/model_test.ckpt")
+        save_path = saver.save(sess, "datasets/model_test")
         print("Model saved in path: %s" % save_path)
         return train_accuracy, test_accuracy, parameters
 
 
-_, _, parameters = model(X_train, Y_train, X_test, Y_test, learning_rate=0.01, num_epochs=3, minibatch_size=64)
+_, _, parameters = model(X_train, Y_train, X_test, Y_test, learning_rate=0.01, num_epochs=31, minibatch_size=64)
