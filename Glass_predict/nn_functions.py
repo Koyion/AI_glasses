@@ -7,7 +7,7 @@ from tensorflow.python.framework import ops
 
 
 def load_dataset():
-    train_dataset = h5py.File('D:/git/datasets/acc_train_set_256.hdf5', "r")
+    train_dataset = h5py.File('datasets/acc_train_set_128.hdf5', "r")
 
     # train_set_x_orig = np.array(train_dataset["X_train"][:6136])  # train set features
     # train_set_y_orig = np.array(train_dataset["Y_train"][:6136])  # train set features
@@ -119,10 +119,6 @@ def predict(X, parameters):
     W2 = tf.convert_to_tensor(parameters["W2"])
     W3 = tf.convert_to_tensor(parameters["W3"])
     W4 = tf.convert_to_tensor(parameters["W4"])
-    print(str(W1))
-    print(str(W2))
-    print(str(W3))
-    print(str(W4))
     params = {"W1": W1,
               "W2": W2,
               "W3": W3,

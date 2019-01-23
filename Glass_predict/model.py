@@ -8,7 +8,7 @@ from scipy import ndimage
 import tensorflow as tf
 from tensorflow.python.framework import ops
 from nn_functions import *
-from model_functions import *
+from model_funtction import *
 
 
 X_train_orig, Y_train, X_test_orig, Y_test, classes = load_dataset()
@@ -106,9 +106,6 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate=0.01,
 
     # Cost function: Add cost function to tensorflow graph
     cost = compute_cost(Z_L, Y, regularizer=regularizer)
-    # Loss function with L2 Regularization with beta=0.01
-    # regularizers = tf.nn.l2_loss(parameters["W1"]) + tf.nn.l2_loss(parameters["W2"])
-    # cost = tf.reduce_mean(cost + 0.01 * regularizers)
 
     # Backpropagation: Define the tensorflow optimizer. Use an AdamOptimizer that minimizes the cost.
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
@@ -121,7 +118,7 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate=0.01,
     config.inter_op_parallelism_threads = 8
     # Start the session to compute the tensorflow graph
     with tf.Session(config=config) as sess:
-
+        saver = tf.train.Saver()
         # Run the initialization
         sess.run(init)
         print(str("----------------------------------------"))
@@ -149,12 +146,14 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate=0.01,
                 costs.append(minibatch_cost)
 
         # plot the cost
-        plt.plot(np.squeeze(costs))
-        plt.ylabel('cost')
-        plt.xlabel('iterations (per tens)')
-        plt.title("Learning rate =" + str(learning_rate))
-        plt.show()
-
+        # plt.plot(np.squeeze(costs))
+        # plt.ylabel('cost')
+        # plt.xlabel('iterations (per tens)')
+        # plt.title("Learning rate =" + str(learning_rate))
+        # plt.show()
+        # lets save the parameters in a variable
+        parameters = sess.run(parameters)
+        print("Parameters have been trained!")
         # Calculate the correct predictions
         predict_op = tf.argmax(Z_L, 1)
         correct_prediction = tf.equal(predict_op, tf.argmax(Y, 1))
@@ -166,28 +165,9 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate=0.01,
         test_accuracy = accuracy.eval({X: X_test[:50], Y: Y_test[:50]})
         print("Train Accuracy:", train_accuracy)
         print("Test Accuracy:", test_accuracy)
-
+        save_path = saver.save(sess, "datasets/model_test.ckpt")
+        print("Model saved in path: %s" % save_path)
         return train_accuracy, test_accuracy, parameters
 
 
-_, _, parameters = model(X_train, Y_train, X_test, Y_test, learning_rate=0.01, num_epochs=4, minibatch_size=64)
-
-fname = "D:/git/datasets/1_00231.jpeg"
-fname_1 = "D:/git/datasets/1_01169.jpeg"
-fname_2 = "D:/git/datasets/1_01193.jpeg"
-
-image = np.array(ndimage.imread(fname, flatten=False))
-image_1 = np.array(ndimage.imread(fname_1, flatten=False))
-image_2 = np.array(ndimage.imread(fname_2, flatten=False))
-
-my_image = scipy.misc.imresize(image, size=(128, 128)).reshape((1, 128, 128, 3))
-my_image_1 = scipy.misc.imresize(image_1, size=(128, 128)).reshape((1, 128, 128, 3))
-my_image_2 = scipy.misc.imresize(image_2, size=(128, 128)).reshape((1, 128, 128, 3))
-
-
-my_image_prediction = predict(my_image, parameters)
-print("Your Algo Predicts for back: y = " + str(np.squeeze(my_image_prediction)))
-#my_image_prediction = predict(my_image_1, parameters)
-#print("Your Algo Predicts for sunglassws: y = " + str(np.squeeze(my_image_prediction)))
-#my_image_prediction = predict(my_image_2, parameters)
-#print("Your Algo Predicts for glasswes: y = " + str(np.squeeze(my_image_prediction)))
+_, _, parameters = model(X_train, Y_train, X_test, Y_test, learning_rate=0.01, num_epochs=3, minibatch_size=64)
