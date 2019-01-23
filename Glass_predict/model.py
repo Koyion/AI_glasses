@@ -172,4 +172,4 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate=0.01,
         return train_accuracy, test_accuracy, parameters
 
 
-_, _, parameters = model(X_train, Y_train, X_test, Y_test, learning_rate=0.01, num_epochs=31, minibatch_size=64)
+_, _, parameters = model(X_train, Y_train, X_test, Y_test, learning_rate=0.01, num_epochs=101, minibatch_size=64)
