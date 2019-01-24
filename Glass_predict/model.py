@@ -15,59 +15,17 @@ X_train_orig, Y_train, X_test_orig, Y_test, classes = load_dataset()
 
 X_train = X_train_orig/255.
 X_test = X_test_orig/255.
-print ("number of training examples = " + str(X_train.shape[0]))
-print ("number of test examples = " + str(X_test.shape[0]))
-print ("X_train shape: " + str(X_train.shape))
-print ("Y_train shape: " + str(Y_train.shape))
-print ("X_test shape: " + str(X_test.shape))
-print ("Y_test shape: " + str(Y_test.shape))
+print("number of training examples = " + str(X_train.shape[0]))
+print("number of test examples = " + str(X_test.shape[0]))
+print("X_train shape: " + str(X_train.shape))
+print("Y_train shape: " + str(Y_train.shape))
+print("X_test shape: " + str(X_test.shape))
+print("Y_test shape: " + str(Y_test.shape))
 conv_layers = {}
-"""
-X, Y = create_placeholders(64, 64, 3, 6)
-print ("X = " + str(X))
-print ("Y = " + str(Y))
-
-print(str(Y_train[0]))
-print(str(Y_train.shape))
-
-tf.reset_default_graph()
-with tf.Session() as sess_test:
-    parameters = initialize_parameters()
-    init = tf.global_variables_initializer()
-    sess_test.run(init)
-    print("W1 = " + str(parameters["W1"].eval()[1,1,1]))
-    print("W2 = " + str(parameters["W2"].eval()[1,1,1]))
-
-
-tf.reset_default_graph()
-
-with tf.Session() as sess:
-    np.random.seed(1)
-    X, Y = create_placeholders(64, 64, 3, 6)
-    parameters = initialize_parameters()
-    Z3 = forward_propagation(X, parameters)
-    init = tf.global_variables_initializer()
-    sess.run(init)
-    a = sess.run(Z3, {X: np.random.randn(2,64,64,3), Y: np.random.randn(2,6)})
-    print("Z3 = " + str(a))
-
-tf.reset_default_graph()
-
-with tf.Session() as sess:
-    np.random.seed(1)
-    X, Y = create_placeholders(64, 64, 3, 6)
-    parameters = initialize_parameters()
-    Z3 = forward_propagation(X, parameters)
-    cost = compute_cost(Z3, Y)
-    init = tf.global_variables_initializer()
-    sess.run(init)
-    a = sess.run(cost, {X: np.random.randn(4,64,64,3), Y: np.random.randn(4,6)})
-    print("cost = " + str(a))
-"""
 
 
 def model(X_train, Y_train, X_test, Y_test, learning_rate=0.01,
-          num_epochs=120, minibatch_size=16, print_cost=True):
+          num_epochs=120, minibatch_size=16, print_cost=True, beta=0.0):
     """
     Implements a three-layer ConvNet in Tensorflow:
     CONV2D -> RELU -> MAXPOOL -> CONV2D -> RELU -> MAXPOOL -> FLATTEN -> FULLYCONNECTED
@@ -99,10 +57,10 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate=0.01,
     X, Y = create_placeholders(n_H0, n_W0, n_C0, n_y)
 
     # Initialize parameters
-    parameters, regularizer = initialize_parameters_l5_2fc(beta=0.01)
+    parameters, regularizer = initialize_parameters_l5_2fc_nb(beta=beta)
 
     # Forward propagation: Build the forward propagation in the tensorflow graph
-    Z_L = forward_propagation_l5_2fc(X, parameters, regularizer=regularizer)
+    Z_L = forward_propagation_l5_2fc_nb(X, parameters, regularizer=regularizer)
 
     y_pred = tf.nn.softmax(Z_L, name='y_pred')
 
@@ -148,11 +106,11 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate=0.01,
                 costs.append(minibatch_cost)
 
         # plot the cost
-        plt.plot(np.squeeze(costs))
-        plt.ylabel('cost')
-        plt.xlabel('iterations (per tens)')
-        plt.title("Learning rate =" + str(learning_rate))
-        plt.show()
+        # plt.plot(np.squeeze(costs))
+        # plt.ylabel('cost')
+        # plt.xlabel('iterations (per tens)')
+        # plt.title("Learning rate =" + str(learning_rate))
+        # plt.show()
         # lets save the parameters in a variable
         # parameters = sess.run(parameters)
         print("Parameters have been trained!")
@@ -172,4 +130,5 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate=0.01,
         return train_accuracy, test_accuracy, parameters
 
 
-_, _, parameters = model(X_train, Y_train, X_test, Y_test, learning_rate=0.01, num_epochs=101, minibatch_size=64)
+_, _, parameters = model(X_train, Y_train, X_test, Y_test,
+                         learning_rate=0.01, num_epochs=20, minibatch_size=64, beta=0.001)

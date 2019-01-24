@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 import os, glob
 import cv2 as cv2
-import sys,argparse
+import sys, argparse
 
 
 # First, pass the path of the image
@@ -48,6 +48,7 @@ feed_dict_testing = {x: x_batch, y_true: y_test_images}
 result = sess.run(y_pred, feed_dict=feed_dict_testing)
 # result is of this format [probabiliy_of_rose probability_of_sunflower]
 print(result)
+print(np.sum(result))
 result_class = np.argmax(result, 1)
 if result_class == 0:
     print("GLASSES ON PERSON")
