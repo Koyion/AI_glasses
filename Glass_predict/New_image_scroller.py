@@ -6,8 +6,6 @@ import h5py
 import scipy.misc
 from PIL import Image
 # from imgaug import augmenters as iaa
-from Class_select import image_class, transcript_class
-
 
 # TRAIN SET COMPLETING
 photoGlassesPath = sys.argv[1]
@@ -21,21 +19,21 @@ for i in os.listdir(photoGlassesPath):
     img = cv2.imread(photoGlassesPath + i, 1)
     tmp_img = scipy.misc.np.array(Image.fromarray(img).resize([num_px, num_px]))
     train_set.append(np.array(tmp_img))
-    cls = np.array([1, 0, 0])
+    cls = np.array([1, 0, 0])  # glasses
     y_set.append(cls)
 
 for i in os.listdir(photoSunglassesPath):
     img = cv2.imread(photoSunglassesPath + i, 1)
     tmp_img = scipy.misc.np.array(Image.fromarray(img).resize([num_px, num_px]))
     train_set.append(np.array(tmp_img))
-    cls = np.array([0, 1, 0])
+    cls = np.array([0, 1, 0])  # sunglasses
     y_set.append(cls)
 
 for i in os.listdir(photoPersonPath):
     img = cv2.imread(photoPersonPath + i, 1)
     tmp_img = scipy.misc.np.array(Image.fromarray(img).resize([num_px, num_px]))
     train_set.append(np.array(tmp_img))
-    cls = np.array([0, 0, 1])
+    cls = np.array([0, 0, 1])  # person
     y_set.append(cls)
 
 # Reformatting
