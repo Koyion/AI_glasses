@@ -23,12 +23,12 @@ images = np.multiply(images, 1.0/255.0)
 # The input to the network is of shape [None image_size image_size num_channels]. Hence we reshape.
 x_batch = images.reshape(1, image_size, image_size, num_channels)
 
-## Let us restore the saved model
+# Let us restore the saved model
 sess = tf.Session()
 # Step-1: Recreate the network graph. At this step only graph is created.
-saver = tf.train.import_meta_graph('datasets/model_test.meta')
+saver = tf.train.import_meta_graph('models/b003la01ep30tra94tea765/glass_model.meta')
 # Step-2: Now let's load the weights saved using the restore method.
-saver.restore(sess, tf.train.latest_checkpoint('datasets/'))
+saver.restore(sess, tf.train.latest_checkpoint('models/b003la01ep30tra94tea765/'))
 
 # Accessing the default graph which we have restored
 graph = tf.get_default_graph()
@@ -37,13 +37,12 @@ graph = tf.get_default_graph()
 # In the original network y_pred is the tensor that is the prediction of the network
 y_pred = graph.get_tensor_by_name("y_pred:0")
 
-## Let's feed the images to the input placeholders
+# Let's feed the images to the input placeholders
 x = graph.get_tensor_by_name("X:0")
 y_true = graph.get_tensor_by_name("Y:0")
 y_test_images = np.zeros((1, 3))
 
-
-### Creating the feed_dict that is required to be fed to calculate y_pred
+# Creating the feed_dict that is required to be fed to calculate y_pred
 feed_dict_testing = {x: x_batch, y_true: y_test_images}
 result = sess.run(y_pred, feed_dict=feed_dict_testing)
 # result is of this format [probabiliy_of_rose probability_of_sunflower]

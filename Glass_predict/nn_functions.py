@@ -7,7 +7,7 @@ from tensorflow.python.framework import ops
 
 
 def load_dataset():
-    train_dataset = h5py.File('datasets/acc_train_set_256.hdf5', "r")
+    train_dataset = h5py.File('train_data/inst_train_set_256.hdf5', "r")
 
     train_set_x_orig = np.array(train_dataset["X_train"][:2560])  # train set features
     train_set_y_orig = np.array(train_dataset["Y_train"][:2560])  # train set features
@@ -28,7 +28,7 @@ def load_dataset():
 
 
 def load_dataset_parts(tr_begin, tr_end, te_begin, te_size=200):
-    train_dataset = h5py.File('datasets/acc_train_set_256.hdf5', "r")
+    train_dataset = h5py.File('train_data/inst_train_set_256.hdf5', "r")
     train_set_x_orig = np.array(train_dataset["X_train"][tr_begin:tr_end])  # train set features
     train_set_y_orig = np.array(train_dataset["Y_train"][tr_begin:tr_end])  # train set features
 
@@ -48,7 +48,7 @@ def load_dataset_parts(tr_begin, tr_end, te_begin, te_size=200):
 
 
 def load_dataset_eval(tr_begin, tr_end, te_begin, te_size=200):
-    train_dataset = h5py.File('datasets/acc_train_set_256.hdf5', "r")
+    train_dataset = h5py.File('train_data/inst_train_set_256.hdf5', "r")
     train_set_x_orig = np.array(train_dataset["X_train"][tr_begin:tr_end])  # train set features
     train_set_y_orig = np.array(train_dataset["Y_train"][tr_begin:tr_end])  # train set features
 

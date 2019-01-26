@@ -11,7 +11,8 @@ from nn_functions import *
 from model_functions import *
 
 
-def model(num_packs=5, tr_dataset_part=512, learning_rate=0.01, num_epochs=120, minibatch_size=16, print_cost=True, beta=0.0):
+def model(num_packs=5, tr_dataset_part=512, learning_rate=0.01, num_epochs=120,
+          minibatch_size=16, print_cost=True, beta=0.0):
 
     X_train_beg, Y_train_beg, X_test_beg, Y_test_beg, classes = load_dataset_parts(0, 1, 2, 1)
 
@@ -60,13 +61,13 @@ def model(num_packs=5, tr_dataset_part=512, learning_rate=0.01, num_epochs=120, 
             for i in range(num_packs):
                 X_train_orig, Y_train, X_test_orig, Y_test, classes = load_dataset_parts(pack, pack + tr_dataset_part,
                                                                                          te_begin)
-                print("SET IS: " + str(pack) + " to: " + str(pack + tr_dataset_part))
+                # print("SET IS: " + str(pack) + " to: " + str(pack + tr_dataset_part))
                 pack += tr_dataset_part
                 X_train = X_train_orig / 255.
-                X_test = X_test_orig / 255.
                 (m, n_H0, n_W0, n_C0) = X_train.shape
-                print("--------------------------------------")
-                num_minibatches = int(num_packs * tr_dataset_part / minibatch_size)  # number of minibatches of size minibatch_size in the train set
+                # print("--------------------------------------")
+                num_minibatches = int(num_packs * tr_dataset_part / minibatch_size)
+                # number of minibatches of size minibatch_size in the train set
                 minibatches = random_mini_batches(X_train, Y_train, minibatch_size, seed=0)
                 for minibatch in minibatches:
                     # Select a minibatch
@@ -98,18 +99,18 @@ def model(num_packs=5, tr_dataset_part=512, learning_rate=0.01, num_epochs=120, 
         # Calculate accuracy on the test set
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
         print(accuracy)
-        X_train_eval, Y_train_eval, X_test_orig_eval, Y_test_eval= load_dataset_eval(200, 400, 500)
+        X_train_eval, Y_train_eval, X_test_orig_eval, Y_test_eval= load_dataset_eval(0, 500, 8200)
         X_train = X_train_eval / 255.
         X_test = X_test_orig_eval / 255.
         train_accuracy = accuracy.eval({X: X_train[:], Y: Y_train_eval[:]})
         test_accuracy = accuracy.eval({X: X_test[:], Y: Y_test_eval[:]})
         print("Train Accuracy:", train_accuracy)
         print("Test Accuracy:", test_accuracy)
-        save_path = saver.save(sess, "datasets/model_test")
+        save_path = saver.save(sess, "models/glass_model")
         print("Model saved in path: %s" % save_path)
         return train_accuracy, test_accuracy, parameters
 
 
 # num_packs = 5 tr_dataset_part = 512 for 2560 examples
-_, _, parameters = model(num_packs=5, tr_dataset_part=512,
-                         learning_rate=0.01, num_epochs=5, minibatch_size=64, beta=0.003)
+_, _, parameters = model(num_packs=16, tr_dataset_part=512,
+                         learning_rate=0.015, num_epochs=40, minibatch_size=64, beta=0.01)
