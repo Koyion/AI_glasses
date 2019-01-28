@@ -99,7 +99,7 @@ def model(num_packs=5, tr_dataset_part=512, learning_rate=0.01, num_epochs=120,
         # Calculate accuracy on the test set
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
         print(accuracy)
-        X_train_eval, Y_train_eval, X_test_orig_eval, Y_test_eval= load_dataset_eval(0, 500, 8200)
+        X_train_eval, Y_train_eval, X_test_orig_eval, Y_test_eval = load_dataset_eval(0, 500, 8200)
         X_train = X_train_eval / 255.
         X_test = X_test_orig_eval / 255.
         train_accuracy = accuracy.eval({X: X_train[:], Y: Y_train_eval[:]})
