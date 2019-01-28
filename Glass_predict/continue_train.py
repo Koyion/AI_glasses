@@ -11,8 +11,8 @@ from nn_functions import *
 from model_functions import *
 
 
-def model(num_packs=5, tr_dataset_part=512, learning_rate=0.01, num_epochs=120,
-          minibatch_size=16, print_cost=True, beta=0.0):
+def continue_model(num_packs=5, tr_dataset_part=512, learning_rate=0.01, num_epochs=120,
+                   minibatch_size=16, print_cost=True, beta=0.0):
 
     X_train_beg, Y_train_beg, X_test_beg, Y_test_beg, classes = load_dataset_parts(0, 1, 2, 1)
 
@@ -50,8 +50,10 @@ def model(num_packs=5, tr_dataset_part=512, learning_rate=0.01, num_epochs=120,
     # Start the session to compute the tensorflow graph
     with tf.Session(config=config) as sess:
         saver = tf.train.Saver()
+        saver.restore(sess, tf.train.latest_checkpoint('datasets/b003la01ep30tra94tea765/'))
+        graph = tf.get_default_graph()
         # Run the initialization
-        sess.run(init)
+        # sess.run(init)
         print(str("--------------------------------------"))
         # Do the training loop
         for epoch in range(num_epochs):
@@ -99,7 +101,7 @@ def model(num_packs=5, tr_dataset_part=512, learning_rate=0.01, num_epochs=120,
         # Calculate accuracy on the test set
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
         print(accuracy)
-        X_train_eval, Y_train_eval, X_test_orig_eval, Y_test_eval = load_dataset_eval(0, 500, 8200)
+        X_train_eval, Y_train_eval, X_test_orig_eval, Y_test_eval = load_dataset_eval(0, 200, 3000)
         X_train = X_train_eval / 255.
         X_test = X_test_orig_eval / 255.
         train_accuracy = accuracy.eval({X: X_train[:], Y: Y_train_eval[:]})
@@ -112,5 +114,8 @@ def model(num_packs=5, tr_dataset_part=512, learning_rate=0.01, num_epochs=120,
 
 
 # num_packs = 5 tr_dataset_part = 512 for 2560 examples
-_, _, parameters = model(num_packs=2, tr_dataset_part=512,
-                         learning_rate=0.015, num_epochs=40, minibatch_size=64, beta=0.01)
+_, _, parameters = continue_model(num_packs=4, tr_dataset_part=512,
+                                  learning_rate=0.015, num_epochs=10, minibatch_size=64, beta=0.01)
+
+
+
