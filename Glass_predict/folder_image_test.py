@@ -2,9 +2,6 @@ import cv2 as cv2
 import os
 import sys
 import numpy as np
-import h5py
-import scipy.misc
-from PIL import Image
 import tensorflow as tf
 
 # Restore the model

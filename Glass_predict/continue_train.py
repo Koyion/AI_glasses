@@ -1,14 +1,7 @@
-import math
-import numpy as np
-import h5py
-import matplotlib.pyplot as plt
-import scipy
-from PIL import Image
-from scipy import ndimage
-import tensorflow as tf
-from tensorflow.python.framework import ops
-from nn_functions import *
 from model_functions import *
+from nn_functions import *
+import matplotlib.pyplot as plt
+from tensorflow.python.framework import ops
 
 
 def continue_model(num_packs=5, tr_dataset_part=512, learning_rate=0.01, num_epochs=120,
@@ -53,7 +46,7 @@ def continue_model(num_packs=5, tr_dataset_part=512, learning_rate=0.01, num_epo
         saver.restore(sess, tf.train.latest_checkpoint('datasets/b003la01ep30tra94tea765/'))
         graph = tf.get_default_graph()
         # Run the initialization
-        # sess.run(init)
+        sess.run(init)
         print(str("--------------------------------------"))
         # Do the training loop
         for epoch in range(num_epochs):

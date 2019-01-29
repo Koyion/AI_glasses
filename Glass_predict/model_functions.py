@@ -1,13 +1,4 @@
-import math
-import numpy as np
-import h5py
-import matplotlib.pyplot as plt
-import scipy
-from PIL import Image
-from scipy import ndimage
 import tensorflow as tf
-from tensorflow.python.framework import ops
-from nn_functions import *
 
 
 def create_placeholders(n_H0, n_W0, n_C0, n_y):

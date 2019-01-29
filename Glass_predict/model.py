@@ -1,15 +1,7 @@
-import math
-import numpy as np
-import h5py
-import matplotlib.pyplot as plt
-import scipy
-from PIL import Image
-from scipy import ndimage
-import tensorflow as tf
-from tensorflow.python.framework import ops
-from nn_functions import *
 from model_functions import *
-
+from nn_functions import *
+import matplotlib.pyplot as plt
+from tensorflow.python.framework import ops
 
 def model(num_packs=5, tr_dataset_part=512, learning_rate=0.01, num_epochs=120,
           minibatch_size=16, print_cost=True, beta=0.0):
@@ -96,7 +88,7 @@ def model(num_packs=5, tr_dataset_part=512, learning_rate=0.01, num_epochs=120,
         predict_op = tf.argmax(Z_L, 1)
         correct_prediction = tf.equal(predict_op, tf.argmax(Y, 1))
 
-        # Calculate accuracy on the test set
+        # Calculate accuracy on the train and test set
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
         print(accuracy)
         X_train_eval, Y_train_eval, X_test_orig_eval, Y_test_eval = load_dataset_eval(0, 500, 8200)

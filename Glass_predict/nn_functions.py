@@ -1,9 +1,6 @@
 import math
 import numpy as np
 import h5py
-import matplotlib.pyplot as plt
-import tensorflow as tf
-from tensorflow.python.framework import ops
 
 
 def load_dataset_parts(tr_begin, tr_end, te_begin, te_size=1):

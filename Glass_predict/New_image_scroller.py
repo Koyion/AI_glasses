@@ -5,7 +5,7 @@ import numpy as np
 import h5py
 import scipy.misc
 from PIL import Image
-# from imgaug import augmenters as iaa
+# from imgaug import augmenters as iaa # for augumentation
 
 # TRAIN SET COMPLETING
 photoGlassesPath = sys.argv[1]

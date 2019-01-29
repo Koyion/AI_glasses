@@ -7,7 +7,7 @@ import sys, argparse
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 image_path = sys.argv[1]
-filename = dir_path +'/' +image_path
+filename = dir_path + '/' + image_path
 image_size = 256
 num_channels = 3
 images = []
